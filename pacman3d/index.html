@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: rgb(20, 20, 20);
+      }
+
+      #container {
+        display: grid;
+        place-items: center;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      canvas {
+        width: 512px;
+        height: 512px;
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./libs/three.module.js",
+          "three/addons/": "./libs/addons/"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="container">
+      <canvas id="canvas" width="512" height="512" tabindex="0"></canvas>
+    </div>
+  </body>
+
+  <script>
+    // Boilerplate code ////////////////////////////////////////////////////////
+
+    // Get the WebGL context
+    const canvas = document.getElementById("canvas");
+    const gl = canvas.getContext("webgl2", {
+      alpha: true,
+      premultipliedAlpha: false,
+    });
+
+    // Basic render loop wrapper.
+    function setRenderLoop(callback) {
+      function renderLoop(time) {
+        callback(time);
+        requestAnimationFrame(renderLoop);
+      }
+      requestAnimationFrame(renderLoop);
+    }
+
+    // Resize callback
+    let _resizeCallback = null;
+    canvas.addEventListener("resize", () => {
+      if (_resizeCallback) {
+        _resizeCallback(canvas.clientWidth, canvas.clientHeight);
+      }
+    });
+    function onResize(callback) {
+      _resizeCallback = callback;
+      _resizeCallback(canvas.clientWidth, canvas.clientHeight);
+    }
+  </script>
+  <script type="module" src="./src/index.js"></script>
+</html>
