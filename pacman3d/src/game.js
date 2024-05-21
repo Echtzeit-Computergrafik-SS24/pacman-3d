@@ -5,6 +5,8 @@ import { vertexShaderSrc as defaultVertexShaderSrc } from "./shaders/default.ver
 import { fragmentShaderSrc as defaultFragmentShaderSrc } from "./shaders/default.frag.js";
 import { vertexShaderSrc as grassVertexShaderSrc } from "./shaders/grassLeaf.vert.js";
 import { fragmentShaderSrc as grassFragmentShaderSrc } from "./shaders/grassLeaf.frag.js";
+import { vertexShaderSrc as skyboxVertexShaderSrc } from "./shaders/skybox.vert.js";
+import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "./shaders/skybox.frag.js";
 
 // addons
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -32,10 +34,11 @@ export default class Game {
 
     this.sun = new THREE.DirectionalLight(0xffffff);
     this.sun.name = "sun";
-    this.sun.position.set(0.5, 0.5, -1);
+    this.sun.position.set(0.3, 0.5, -1);
     this.scene.add(this.sun);
 
     this.initMaterials();
+    this.initSkybox();
     this.initWorldObjects();
 
     this.controls = new OrbitControls(this.camera, this.canvas);
@@ -64,8 +67,37 @@ export default class Game {
     this.scene.add(grass);
   }
 
+  initSkybox() {
+    const loader = new THREE.CubeTextureLoader();
+    loader.setPath("assets/textures/skybox/");
+
+    const textureCube = loader.load([
+      "skybox-right-px.avif",
+      "skybox-left-nx.avif",
+      "skybox-top-py.avif",
+      "skybox-bottom-ny.avif",
+      "skybox-front-pz.avif",
+      "skybox-back-nz.avif",
+    ]);
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        u_skybox: { value: textureCube },
+      },
+      vertexShader: skyboxVertexShaderSrc,
+      fragmentShader: skyboxFragmentShaderSrc,
+      glslVersion: THREE.GLSL3,
+      name: "skybox-mat",
+      side: THREE.BackSide,
+    });
+
+    const skyboxGeometry = new THREE.BoxGeometry(20, 20, 20);
+    this.skybox = new THREE.Mesh(skyboxGeometry, material);
+    this.skybox.name = "skybox";
+    this.scene.add(this.skybox);
+  }
+
   initMaterials() {
-    console.log(this.sun.position);
     this.materials = {
       default: new THREE.ShaderMaterial({
         uniforms: {
@@ -82,6 +114,7 @@ export default class Game {
         uniforms: {
           u_time: { value: 0 },
           u_timeScale: { value: 5.0 },
+          u_lightDirection: { value: this.sun.position.clone().normalize() },
         },
         vertexShader: grassVertexShaderSrc,
         fragmentShader: grassFragmentShaderSrc,
@@ -142,7 +175,6 @@ export default class Game {
 
     /* const geometry = new THREE.ConeGeometry(.1, 1, undefined, 4);
     geometry.translate(0, 0.5, 0); */
-
 
     const dummy = new THREE.Object3D();
 
