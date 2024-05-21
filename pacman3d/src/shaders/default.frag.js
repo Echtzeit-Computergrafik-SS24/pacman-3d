@@ -2,6 +2,8 @@ export const fragmentShaderSrc = `
 precision mediump float;
     
 uniform vec3 u_lightDirection;
+uniform vec3 u_diffuseColor;
+uniform float u_specularIntensity;
 
 in vec3 f_worldPos;
 in vec3 f_normal;
@@ -16,14 +18,14 @@ void main() {
 
     // diffuse
     float diffuseIntensity = max(0.0, dot(normal, u_lightDirection));
-    vec3 diffuse = vec3(diffuseIntensity);
+    vec3 diffuse = diffuseIntensity * u_diffuseColor;
 
     // ambient
     float ambientIntensity = .07;
     vec3 ambient = vec3(ambientIntensity);
 
     // specular
-    float specularIntensity = pow(max(.0, dot(normal, halfWay)), 64.0);
+    float specularIntensity = pow(max(.0, dot(normal, halfWay)), 64.0) * u_specularIntensity;
     vec3 specular = vec3(specularIntensity);
 
     o_fragColor = vec4(ambient + diffuse + specular, 1.0);
