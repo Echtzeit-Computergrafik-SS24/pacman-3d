@@ -7,15 +7,18 @@ uniform float u_time;
 uniform float u_timeScale;
 
 out vec2 vUv;
+out vec3 f_normal;
 
 
 void main() {
     vUv = uv;
+    
 
     // vertex position
     vec4 pos = vec4(position, 1.0);
     #ifdef USE_INSTANCING
         pos = instanceMatrix * pos;
+        f_normal = (instanceMatrix * vec4(normal, 0.0)).xyz;
     #endif
 
     // displacement
