@@ -5,14 +5,13 @@ precision highp float;
 
 uniform float u_time;
 uniform float u_timeScale;
+uniform float u_displacementStrength;
 
-out vec2 vUv;
+out vec2 f_uv;
 out vec3 f_normal;
 
-
 void main() {
-    vUv = uv;
-    
+    f_uv = uv;
 
     // vertex position
     vec4 pos = vec4(position, 1.0);
@@ -22,7 +21,7 @@ void main() {
     #endif
 
     // displacement
-    float displacementPwr = 1.0 - cos(uv.y * M_PI / 2.0);
+    float displacementPwr = (1.0 - cos(uv.y * M_PI / 2.0)) * u_displacementStrength;
     float displacementZ = sin(pos.z + u_time * u_timeScale) * (.1 * displacementPwr);
     float displacementX = cos(pos.x + u_time * u_timeScale) * (.1 * displacementPwr);
     pos.z += displacementZ;

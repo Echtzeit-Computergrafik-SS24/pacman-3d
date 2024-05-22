@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { TileType } from "./tiletype.enum.js";
 
 // shader source files
 import { vertexShaderSrc as defaultVertexShaderSrc } from "./shaders/default.vert.js";
@@ -11,6 +12,9 @@ import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "./shaders/skybox.f
 // addons
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+// maps
+import { map } from "../assets/maps/test.map.js";
 
 export default class Game {
   constructor() {
@@ -49,13 +53,13 @@ export default class Game {
   }
 
   initWorldObjects() {
-    const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
+    const sphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
     const sphere = new THREE.Mesh(sphereGeometry);
     sphere.name = "sphere";
-    // this.scene.add(sphere);
+    this.scene.add(sphere);
 
     // this.loadOBj("assets/models/monkey.obj", "monkey", this.materials.default);
-
+    /* 
     const floorGeometry = new THREE.PlaneGeometry(10, 10);
     this.createDiffuseMaterial("floor", 0x68ff7f, 0.2);
     const floor = new THREE.Mesh(floorGeometry, this.materials["floor"]);
@@ -65,6 +69,8 @@ export default class Game {
 
     const grass = this.createGrassPlane(10, 10, 0.7, 5000);
     this.scene.add(grass);
+ */
+    this.loadMap();
   }
 
   initSkybox() {
@@ -110,41 +116,31 @@ export default class Game {
         glslVersion: THREE.GLSL3,
         name: "default-mat",
       }),
-      grassLeaves: new THREE.ShaderMaterial({
-        uniforms: {
-          u_time: { value: 0 },
-          u_timeScale: { value: 5.0 },
-          u_lightDirection: { value: this.sun.position.clone().normalize() },
-        },
-        vertexShader: grassVertexShaderSrc,
-        fragmentShader: grassFragmentShaderSrc,
-        glslVersion: THREE.GLSL3,
-        name: "grass-mat",
-        side: THREE.DoubleSide,
-      }),
     };
   }
 
-  createDiffuseMaterial(name, hexColor, specular = 0.5) {
+  createDiffuseMaterial(name, hexColor = 0xffffff, specular = 0.5) {
     const color = new THREE.Color(hexColor);
 
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        u_lightDirection: { value: this.sun.position.clone().normalize() },
-        u_diffuseColor: { value: new THREE.Vector3(color.r, color.g, color.b) },
-        u_specularIntensity: { value: specular },
-      },
-      vertexShader: defaultVertexShaderSrc,
-      fragmentShader: defaultFragmentShaderSrc,
-      glslVersion: THREE.GLSL3,
-      name: name,
-    });
-
     if (!this.materials[name]) {
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          u_lightDirection: { value: this.sun.position.clone().normalize() },
+          u_diffuseColor: {
+            value: new THREE.Vector3(color.r, color.g, color.b),
+          },
+          u_specularIntensity: { value: specular },
+        },
+        vertexShader: defaultVertexShaderSrc,
+        fragmentShader: defaultFragmentShaderSrc,
+        glslVersion: THREE.GLSL3,
+        name: name,
+      });
+
       this.materials[name] = material;
     }
 
-    return material;
+    return this.materials[name];
   }
 
   loadOBj(path, name, material) {
@@ -169,12 +165,76 @@ export default class Game {
     );
   }
 
-  createGrassPlane(width, height, leafHeight, instanceNum) {
-    const geometry = new THREE.PlaneGeometry(0.1, leafHeight, 1, 4);
-    geometry.translate(0, 0.5, 0);
+  loadMap() {
+    if (!map) {
+      console.log("no map found");
+      return;
+    }
 
-    /* const geometry = new THREE.ConeGeometry(.1, 1, undefined, 4);
-    geometry.translate(0, 0.5, 0); */
+    const height = map.length;
+    const width = map[0].length;
+    const group = new THREE.Group();
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const tileType = map[y][x];
+
+        switch (tileType) {
+          case TileType.GROUND:
+            const groundTile = new THREE.Group();
+            groundTile.position.set(x, 0, y);
+
+            const groundGeometry = new THREE.PlaneGeometry(1, 1);
+            this.createDiffuseMaterial("floor", 0x68ff7f, 0.2);
+            const ground = new THREE.Mesh(
+              groundGeometry,
+              this.materials["floor"]
+            );
+            ground.rotation.x = THREE.MathUtils.degToRad(-90);
+            ground.name = `ground-${x}-${y}`;
+            groundTile.add(ground);
+
+            const grass = this.createGrassPlane(1, 1, 0.3, 500);
+            groundTile.add(grass);
+
+            group.add(groundTile);
+
+            break;
+          case TileType.WALL:
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const cube = new THREE.Mesh(geometry, this.materials.default);
+            cube.position.set(x, 0.5, y);
+            group.add(cube);
+            break;
+        }
+      }
+    }
+    group.position.set(-(width * 0.5) + 0.5, 0, -(height * 0.5) + 0.5);
+
+    this.scene.add(group);
+  }
+
+  createGrassPlane(width, height, leafHeight, instanceNum) {
+    const geometry = new THREE.PlaneGeometry(0.01, leafHeight, 1, 4);
+    geometry.translate(0, 0.5 * leafHeight, 0);
+
+    if (!this.materials["grassLeaves"]) {
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          u_time: { value: 0 },
+          u_timeScale: { value: 3.0 },
+          u_displacementStrength: { value: .3 },
+          u_lightDirection: { value: this.sun.position.clone().normalize() },
+        },
+        vertexShader: grassVertexShaderSrc,
+        fragmentShader: grassFragmentShaderSrc,
+        glslVersion: THREE.GLSL3,
+        name: "grass-mat",
+        side: THREE.DoubleSide,
+      });
+
+      this.materials["grassLeaves"] = material;
+    }
 
     const dummy = new THREE.Object3D();
 
