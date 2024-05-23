@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { TileType } from "./tiletype.enum.js";
 
 // shader source files
-import { vertexShaderSrc as defaultVertexShaderSrc } from "./shaders/default.vert.js";
-import { fragmentShaderSrc as defaultFragmentShaderSrc } from "./shaders/default.frag.js";
+import { vertexShaderSrc as defaultVertexShaderSrc } from "./shaders/diffuse.vert.js";
+import { fragmentShaderSrc as defaultFragmentShaderSrc } from "./shaders/diffuse.frag.js";
 import { vertexShaderSrc as grassVertexShaderSrc } from "./shaders/grassLeaf.vert.js";
 import { fragmentShaderSrc as grassFragmentShaderSrc } from "./shaders/grassLeaf.frag.js";
 import { vertexShaderSrc as skyboxVertexShaderSrc } from "./shaders/skybox.vert.js";
@@ -15,6 +15,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // maps
 import { map } from "../assets/maps/test.map.js";
+import { Player } from "./gameobject.js";
 
 export default class Game {
   constructor() {
@@ -22,30 +23,31 @@ export default class Game {
   }
 
   init() {
-    this.canvas = document.getElementById("canvas");
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-    this.scene = new THREE.Scene();
+    global.canvas = document.getElementById("canvas");
+    global.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    global.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(
+    global.camera = new THREE.PerspectiveCamera(
       75,
-      this.canvas.clientWidth / this.canvas.clientHeight,
+      global.canvas.clientWidth / global.canvas.clientHeight,
       0.1,
       100
     );
-    this.camera.name = "camera";
-    this.camera.position.set(0, 4, 10);
-    this.scene.add(this.camera);
+    global.camera.name = "camera";
+    global.camera.position.set(0, 4, 10);
+    global.scene.add(global.camera);
 
-    this.sun = new THREE.DirectionalLight(0xffffff);
-    this.sun.name = "sun";
-    this.sun.position.set(0.3, 0.5, -1);
-    this.scene.add(this.sun);
+    global.sun = new THREE.DirectionalLight(0xffffff);
+    global.sun.name = "sun";
+    global.sun.position.set(0.3, 0.5, -1);
+    global.scene.add(global.sun);
 
-    this.initMaterials();
     this.initSkybox();
+    this.initMaterials();
     this.initWorldObjects();
+    this.initGameObjects();
 
-    this.controls = new OrbitControls(this.camera, this.canvas);
+    global.controls = new OrbitControls(global.camera, global.canvas);
   }
 
   start() {
@@ -56,19 +58,19 @@ export default class Game {
     const sphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
     const sphere = new THREE.Mesh(sphereGeometry);
     sphere.name = "sphere";
-    this.scene.add(sphere);
+    global.scene.add(sphere);
 
-    // this.loadOBj("assets/models/monkey.obj", "monkey", this.materials.default);
+    // this.loadOBj("assets/models/monkey.obj", "monkey", global.materials.default);
     /* 
     const floorGeometry = new THREE.PlaneGeometry(10, 10);
     this.createDiffuseMaterial("floor", 0x68ff7f, 0.2);
-    const floor = new THREE.Mesh(floorGeometry, this.materials["floor"]);
+    const floor = new THREE.Mesh(floorGeometry, global.materials["floor"]);
     floor.rotation.x = THREE.MathUtils.degToRad(-90);
     floor.name = "floor";
-    this.scene.add(floor);
+    global.scene.add(floor);
 
     const grass = this.createGrassPlane(10, 10, 0.7, 5000);
-    this.scene.add(grass);
+    global.scene.add(grass);
  */
     this.loadMap();
   }
@@ -98,18 +100,20 @@ export default class Game {
     });
 
     const skyboxGeometry = new THREE.BoxGeometry(20, 20, 20);
-    this.skybox = new THREE.Mesh(skyboxGeometry, material);
-    this.skybox.name = "skybox";
-    this.scene.add(this.skybox);
+    global.skybox = new THREE.Mesh(skyboxGeometry, material);
+    global.skybox.name = "skybox";
+    global.scene.add(global.skybox);
   }
 
   initMaterials() {
-    this.materials = {
+    global.materials = {
       default: new THREE.ShaderMaterial({
         uniforms: {
-          u_lightDirection: { value: this.sun.position.clone().normalize() },
+          u_lightDirection: { value: global.sun.position.clone().normalize() },
           u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
-          u_specularIntensity: { value: 0.5 },
+          u_specularIntensity: { value: 0.3 },
+          u_reflectionIntensity: { value: 0.05 },
+          u_skybox: { value: global.skybox.material.uniforms.u_skybox.value },
         },
         vertexShader: defaultVertexShaderSrc,
         fragmentShader: defaultFragmentShaderSrc,
@@ -119,13 +123,17 @@ export default class Game {
     };
   }
 
+  initGameObjects() {
+    const player = new Player([1, 1]);
+  }
+
   createDiffuseMaterial(name, hexColor = 0xffffff, specular = 0.5) {
     const color = new THREE.Color(hexColor);
 
-    if (!this.materials[name]) {
+    if (!global.materials[name]) {
       const material = new THREE.ShaderMaterial({
         uniforms: {
-          u_lightDirection: { value: this.sun.position.clone().normalize() },
+          u_lightDirection: { value: global.sun.position.clone().normalize() },
           u_diffuseColor: {
             value: new THREE.Vector3(color.r, color.g, color.b),
           },
@@ -137,10 +145,10 @@ export default class Game {
         name: name,
       });
 
-      this.materials[name] = material;
+      global.materials[name] = material;
     }
 
-    return this.materials[name];
+    return global.materials[name];
   }
 
   loadOBj(path, name, material) {
@@ -154,7 +162,7 @@ export default class Game {
               child.material = material;
             }
             child.name = name;
-            this.scene.add(child);
+            global.scene.add(child);
           }
         });
       },
@@ -171,13 +179,16 @@ export default class Game {
       return;
     }
 
-    const height = map.length;
-    const width = map[0].length;
+    global.map = map;
+
+    const height = global.map.length;
+    const width = global.map[0].length;
     const group = new THREE.Group();
+    group.name = "map";
 
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const tileType = map[y][x];
+        const tileType = global.map[y][x];
 
         switch (tileType) {
           case TileType.GROUND:
@@ -188,7 +199,7 @@ export default class Game {
             this.createDiffuseMaterial("floor", 0x68ff7f, 0.2);
             const ground = new THREE.Mesh(
               groundGeometry,
-              this.materials["floor"]
+              global.materials["floor"]
             );
             ground.rotation.x = THREE.MathUtils.degToRad(-90);
             ground.name = `ground-${x}-${y}`;
@@ -202,7 +213,7 @@ export default class Game {
             break;
           case TileType.WALL:
             const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const cube = new THREE.Mesh(geometry, this.materials.default);
+            const cube = new THREE.Mesh(geometry, global.materials.default);
             cube.position.set(x, 0.5, y);
             group.add(cube);
             break;
@@ -211,20 +222,20 @@ export default class Game {
     }
     group.position.set(-(width * 0.5) + 0.5, 0, -(height * 0.5) + 0.5);
 
-    this.scene.add(group);
+    global.scene.add(group);
   }
 
   createGrassPlane(width, height, leafHeight, instanceNum) {
     const geometry = new THREE.PlaneGeometry(0.01, leafHeight, 1, 4);
     geometry.translate(0, 0.5 * leafHeight, 0);
 
-    if (!this.materials["grassLeaves"]) {
+    if (!global.materials["grassLeaves"]) {
       const material = new THREE.ShaderMaterial({
         uniforms: {
           u_time: { value: 0 },
           u_timeScale: { value: 3.0 },
-          u_displacementStrength: { value: .3 },
-          u_lightDirection: { value: this.sun.position.clone().normalize() },
+          u_displacementStrength: { value: 0.3 },
+          u_lightDirection: { value: global.sun.position.clone().normalize() },
         },
         vertexShader: grassVertexShaderSrc,
         fragmentShader: grassFragmentShaderSrc,
@@ -233,14 +244,14 @@ export default class Game {
         side: THREE.DoubleSide,
       });
 
-      this.materials["grassLeaves"] = material;
+      global.materials["grassLeaves"] = material;
     }
 
     const dummy = new THREE.Object3D();
 
     const instancedMesh = new THREE.InstancedMesh(
       geometry,
-      this.materials.grassLeaves,
+      global.materials.grassLeaves,
       instanceNum
     );
 
@@ -264,9 +275,9 @@ export default class Game {
   render(time) {
     time *= 0.001;
 
-    this.materials.grassLeaves.uniforms.u_time.value = time;
+    global.materials.grassLeaves.uniforms.u_time.value = time;
 
-    this.renderer.render(this.scene, this.camera);
+    global.renderer.render(global.scene, global.camera);
 
     requestAnimationFrame(this.render.bind(this));
   }

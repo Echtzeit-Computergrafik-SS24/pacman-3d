@@ -4,6 +4,8 @@ precision mediump float;
 uniform vec3 u_lightDirection;
 uniform vec3 u_diffuseColor;
 uniform float u_specularIntensity;
+uniform float u_reflectionIntensity;
+uniform samplerCube u_skybox;
 
 in vec3 f_worldPos;
 in vec3 f_normal;
@@ -28,7 +30,13 @@ void main() {
     float specularIntensity = pow(max(.0, dot(normal, halfWay)), 64.0) * u_specularIntensity;
     vec3 specular = vec3(specularIntensity);
 
-    o_fragColor = vec4(ambient + diffuse + specular, 1.0);
+    // cubemap reflection
+    vec3 reflectionDirection = reflect(viewDirection, normal);
+    reflectionDirection.x = -reflectionDirection.x;
+    vec3 reflection = texture(u_skybox, reflectionDirection).rgb;
+
+    // o_fragColor = vec4(ambient + diffuse + specular, 1.0);
+    o_fragColor = vec4(mix(vec3(ambient + diffuse + specular), reflection, u_reflectionIntensity), 1.0);
 }
 `;
 
