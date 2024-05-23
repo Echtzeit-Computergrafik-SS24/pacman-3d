@@ -37,37 +37,15 @@
   </body>
 
   <script>
-    // Boilerplate code ////////////////////////////////////////////////////////
-
     const global = {};
-
-    // Get the WebGL context
-    const canvas = document.getElementById("canvas");
-    const gl = canvas.getContext("webgl2", {
-      alpha: true,
-      premultipliedAlpha: false,
-    });
-
-    // Basic render loop wrapper.
-    function setRenderLoop(callback) {
-      function renderLoop(time) {
-        callback(time);
-        requestAnimationFrame(renderLoop);
-      }
-      requestAnimationFrame(renderLoop);
-    }
-
-    // Resize callback
-    let _resizeCallback = null;
-    canvas.addEventListener("resize", () => {
-      if (_resizeCallback) {
-        _resizeCallback(canvas.clientWidth, canvas.clientHeight);
-      }
-    });
-    function onResize(callback) {
-      _resizeCallback = callback;
-      _resizeCallback(canvas.clientWidth, canvas.clientHeight);
-    }
   </script>
-  <script type="module" src="./index.js"></script>
+  <script type="module">
+    ("use strict");
+    import { World } from "./src/world.js";
+
+    const canvas = document.getElementById("canvas");
+    const world = new World(canvas);
+    world.start();
+
+  </script>
 </html>

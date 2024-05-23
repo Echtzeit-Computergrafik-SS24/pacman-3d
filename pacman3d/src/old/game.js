@@ -2,20 +2,20 @@ import * as THREE from "three";
 import { TileType } from "./tiletype.enum.js";
 
 // shader source files
-import { vertexShaderSrc as defaultVertexShaderSrc } from "./shaders/diffuse.vert.js";
-import { fragmentShaderSrc as defaultFragmentShaderSrc } from "./shaders/diffuse.frag.js";
-import { vertexShaderSrc as grassVertexShaderSrc } from "./shaders/grassLeaf.vert.js";
-import { fragmentShaderSrc as grassFragmentShaderSrc } from "./shaders/grassLeaf.frag.js";
-import { vertexShaderSrc as skyboxVertexShaderSrc } from "./shaders/skybox.vert.js";
-import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "./shaders/skybox.frag.js";
+import { vertexShaderSrc as defaultVertexShaderSrc } from "../shaders/diffuse.vert.js";
+import { fragmentShaderSrc as defaultFragmentShaderSrc } from "../shaders/diffuse.frag.js";
+import { vertexShaderSrc as grassVertexShaderSrc } from "../shaders/grassLeaf.vert.js";
+import { fragmentShaderSrc as grassFragmentShaderSrc } from "../shaders/grassLeaf.frag.js";
+import { vertexShaderSrc as skyboxVertexShaderSrc } from "../shaders/skybox.vert.js";
+import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "../shaders/skybox.frag.js";
 
 // addons
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // maps
-import { map } from "../assets/maps/test.map.js";
-import { Player } from "./gameobject.js";
+import { map } from "../../assets/maps/test.map.js";
+import { Player } from "../gameobject.js";
 
 export default class Game {
   constructor() {
