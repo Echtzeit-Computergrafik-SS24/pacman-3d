@@ -12,7 +12,7 @@ import { map } from "../assets/maps/test.map.js";
 
 import { Resizer } from "./systems/resizer.js";
 import { Loop } from "./systems/loop.js";
-import { Collectable, Player } from "./components/gameobject.js";
+import { Collectable, Player, Enemy } from "./components/gameobject.js";
 import { Input } from "./systems/input.js";
 
 let camera;
@@ -30,6 +30,9 @@ export class World {
     loop = new Loop(camera, scene, renderer);
     global.materials = createMaterials();
     global.map = JSON.parse(JSON.stringify(map));
+    global.endGame = this.onGameEnd;
+    global.restart = this.onRestart.bind(this);
+    global.clock = new THREE.Clock();
 
     // add map object
     const mapObject = createMapObject(global.map.data);
@@ -40,16 +43,19 @@ export class World {
     scene.add(skybox);
 
     // add player
-    const player = new Player(global.map.playerspawn);
-    loop.updatables.push(player);
-    mapObject.add(player.mesh);
+    global.player = new Player(global.map.playerspawn);
+    loop.updatables.push(global.player);
+    mapObject.add(global.player.mesh);
 
     // add collectables
     global.collectables = Collectable.createCollecables(loop.updatables);
     mapObject.add(global.collectables);
 
-    const input = new Input();
+    // add enemies
+    global.enemies = Enemy.createEnemies(loop.updatables);
+    mapObject.add(global.enemies);
 
+    this.input = new Input();
     const resizer = new Resizer(canvas, camera, renderer);
     this.controls = new OrbitControls(camera, canvas);
   }
@@ -64,5 +70,21 @@ export class World {
 
   stop() {
     loop.stop();
+  }
+
+  onGameEnd() {
+    document.getElementById("ui-gameover").style.display = "flex";
+    document.getElementById("ui-playing").style.display = "none";
+    document.getElementById(
+      "ui-var-score-gameover"
+    ).textContent = `score: ${global.player.score}`;
+    loop.stop();
+  }
+
+  onRestart() {
+    this.input.removeEventListeners();
+    document.getElementById("ui-gameover").style.display = "none";
+    document.getElementById("ui-playing").style.display = "block";
+    document.getElementById("ui-var-score").textContent = "0";
   }
 }

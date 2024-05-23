@@ -1,7 +1,3 @@
-import { Clock } from "three";
-
-global.clock = new Clock();
-
 export class Loop {
   constructor(camera, scene, renderer) {
     this.camera = camera;

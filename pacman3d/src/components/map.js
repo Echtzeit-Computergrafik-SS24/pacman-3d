@@ -3,6 +3,7 @@ import * as THREE from "three";
 export const TileType = {
   GROUND: 0,
   WALL: 1,
+  ENEMY_SPAWN: 2,
 };
 
 export function createMapObject(mapdata) {
@@ -18,6 +19,7 @@ export function createMapObject(mapdata) {
       switch (tileType) {
         default:
           break;
+        case TileType.ENEMY_SPAWN:
         case TileType.GROUND:
           const groundTile = new THREE.Group();
           groundTile.position.set(x, 0, y);

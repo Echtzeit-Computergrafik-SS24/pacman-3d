@@ -23,15 +23,26 @@
         position: absolute;
         width: 800px;
         height: 450px;
-        pointer-events: none;
         font-family: "Gill Sans", sans-serif;
         font-size: 20px;
+        font-weight: bold;
         display: flex;
         flex-direction: column;
       }
 
+      #ui-playing.ui-container {
+        pointer-events: none;
+      }
+
       .ui-container > * {
         margin: 20px;
+      }
+
+      #ui-gameover {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
       }
     </style>
 
@@ -48,21 +59,33 @@
   <body>
     <div id="container">
       <canvas id="canvas" width="800" height="450" tabindex="0"></canvas>
-      <div class="ui-container">
-        <div><span>score: </span><span id="ui-score">0</span></div>
+      <div id="ui-playing" class="ui-container">
+        <div><span>score: </span><span id="ui-var-score">0</span></div>
+      </div>
+      <div id="ui-gameover" class="ui-container">
+        <span style="font-size: 60px">GAME OVER</span>
+        <span id="ui-var-score-gameover" style="font-size: 30px"></span>
+        <button id="restart-button" type="button">Restart</button>
       </div>
     </div>
   </body>
 
   <script>
-    const global = {};
+    let global = {};
   </script>
   <script type="module">
     ("use strict");
     import { World } from "./src/world.js";
 
     const canvas = document.getElementById("canvas");
-    const world = new World(canvas);
+    let world = new World(canvas);
     world.start();
+
+    document.getElementById("restart-button").addEventListener("click", () => {
+      global.restart();
+      global = {};
+      world = new World(canvas);
+      world.start();
+    });
   </script>
 </html>
