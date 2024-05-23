@@ -8,9 +8,12 @@ import { createSkybox } from "./components/skybox.js";
 import { createMapObject } from "./components/map.js";
 import { createMaterials } from "./components/material.js";
 
+import { map } from "../assets/maps/test.map.js";
+
 import { Resizer } from "./systems/resizer.js";
 import { Loop } from "./systems/loop.js";
-import { map } from "../assets/maps/test.map.js";
+import { Player } from "./components/gameobject.js";
+import { Input } from "./components/input.js";
 
 let camera;
 let renderer;
@@ -24,8 +27,8 @@ export class World {
     camera = createCamera();
     scene = createScene();
     renderer = createRenderer(canvas);
-    global.materials = createMaterials();
     loop = new Loop(camera, scene, renderer);
+    global.materials = createMaterials();
 
     // add objects to scene here
     const mapObject = createMapObject(map);
@@ -33,6 +36,12 @@ export class World {
 
     const skybox = createSkybox();
     scene.add(skybox);
+
+    const player = new Player([1, 1]);
+    loop.updatables.push(player);
+    mapObject.add(player.mesh);
+
+    const input = new Input(canvas);
 
     const resizer = new Resizer(canvas, camera, renderer);
     this.controls = new OrbitControls(camera, canvas);

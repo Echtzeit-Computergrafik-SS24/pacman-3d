@@ -1,6 +1,6 @@
 import { Clock } from "three";
 
-const clock = new Clock();
+global.clock = new Clock();
 
 export class Loop {
   constructor(camera, scene, renderer) {
@@ -12,13 +12,20 @@ export class Loop {
 
   start() {
     this.renderer.setAnimationLoop(() => {
-      const time = clock.getElapsedTime();
+      const time = global.clock.getElapsedTime();
 
       // update shader uniforms
       global.materials.grassleaf.uniforms.u_time.value = time;
 
       // update updatable objects
       this.tick();
+
+      // check each pressed key if it was pressed in the frame before
+      for (let [key, value] of Object.entries(global.keys)) {
+        if (value.keydown == true) {
+          value.keydown = false;
+        }
+      }
 
       // render image
       this.renderer.render(this.scene, this.camera);
@@ -30,7 +37,7 @@ export class Loop {
   }
 
   tick() {
-    const deltaTime = clock.getDelta();
+    const deltaTime = global.clock.getDelta();
 
     for (const object of this.updatables) {
       if (object.tick) {
