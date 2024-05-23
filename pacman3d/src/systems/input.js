@@ -1,8 +1,8 @@
 export class Input {
-  constructor(canvas) {
+  constructor() {
     global.keys = {};
 
-    canvas.addEventListener("keydown", (event) => {
+    window.addEventListener("keydown", (event) => {
       const key = event.key.toLowerCase();
       global.keys[key] = {
         pressed: true,
@@ -10,7 +10,7 @@ export class Input {
       };
     });
 
-    canvas.addEventListener("keyup", (event) => {
+    window.addEventListener("keyup", (event) => {
       delete global.keys[event.key.toLowerCase()];
     });
   }

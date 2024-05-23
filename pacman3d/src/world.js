@@ -13,7 +13,7 @@ import { map } from "../assets/maps/test.map.js";
 import { Resizer } from "./systems/resizer.js";
 import { Loop } from "./systems/loop.js";
 import { Player } from "./components/gameobject.js";
-import { Input } from "./components/input.js";
+import { Input } from "./systems/input.js";
 
 let camera;
 let renderer;
@@ -41,7 +41,7 @@ export class World {
     loop.updatables.push(player);
     mapObject.add(player.mesh);
 
-    const input = new Input(canvas);
+    const input = new Input();
 
     const resizer = new Resizer(canvas, camera, renderer);
     this.controls = new OrbitControls(camera, canvas);
