@@ -59,5 +59,18 @@ export function createMaterials() {
       name: "grassleaf-material",
       side: THREE.DoubleSide,
     }),
+    collectable: new THREE.ShaderMaterial({
+      uniforms: {
+        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_diffuseColor: { value: new THREE.Vector3(1, 1, 0) },
+        u_specularIntensity: { value: 0.3 },
+        u_reflectionIntensity: { value: 0.05 },
+        u_skybox: { value: null },
+      },
+      vertexShader: defaultVertexShaderSrc,
+      fragmentShader: defaultFragmentShaderSrc,
+      glslVersion: THREE.GLSL3,
+      name: "default-material",
+    }),
   };
 }

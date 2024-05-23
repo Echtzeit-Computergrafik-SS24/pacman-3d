@@ -5,15 +5,15 @@ export const TileType = {
   WALL: 1,
 };
 
-export function createMapObject(map) {
-  const height = map.length;
-  const width = map[0].length;
+export function createMapObject(mapdata) {
+  const height = mapdata.length;
+  const width = mapdata[0].length;
   const group = new THREE.Group();
   group.name = "map";
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const tileType = map[y][x];
+      const tileType = mapdata[y][x];
 
       switch (tileType) {
         default:
@@ -31,7 +31,7 @@ export function createMapObject(map) {
           ground.name = `ground-${x}-${y}`;
           groundTile.add(ground);
 
-          const grass = createGrass(1, 1, .3, 500);
+          const grass = createGrass(1, 1, 0.3, 500);
           groundTile.add(grass);
 
           group.add(groundTile);
