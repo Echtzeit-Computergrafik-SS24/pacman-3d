@@ -18,6 +18,21 @@
         width: 100vw;
         height: 100vh;
       }
+
+      .ui-container {
+        position: absolute;
+        width: 800px;
+        height: 450px;
+        pointer-events: none;
+        font-family: "Gill Sans", sans-serif;
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .ui-container > * {
+        margin: 20px;
+      }
     </style>
 
     <script type="importmap">
@@ -33,6 +48,9 @@
   <body>
     <div id="container">
       <canvas id="canvas" width="800" height="450" tabindex="0"></canvas>
+      <div class="ui-container">
+        <div><span>score: </span><span id="ui-score">0</span></div>
+      </div>
     </div>
   </body>
 
@@ -46,6 +64,5 @@
     const canvas = document.getElementById("canvas");
     const world = new World(canvas);
     world.start();
-
   </script>
 </html>

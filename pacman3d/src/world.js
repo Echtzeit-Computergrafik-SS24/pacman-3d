@@ -12,7 +12,7 @@ import { map } from "../assets/maps/test.map.js";
 
 import { Resizer } from "./systems/resizer.js";
 import { Loop } from "./systems/loop.js";
-import { Player } from "./components/gameobject.js";
+import { Collectable, Player } from "./components/gameobject.js";
 import { Input } from "./systems/input.js";
 
 let camera;
@@ -29,17 +29,24 @@ export class World {
     renderer = createRenderer(canvas);
     loop = new Loop(camera, scene, renderer);
     global.materials = createMaterials();
+    global.map = JSON.parse(JSON.stringify(map));
 
-    // add objects to scene here
-    const mapObject = createMapObject(map);
+    // add map object
+    const mapObject = createMapObject(global.map.data);
     scene.add(mapObject);
 
+    // add skybox
     const skybox = createSkybox();
     scene.add(skybox);
 
-    const player = new Player([1, 1]);
+    // add player
+    const player = new Player(global.map.playerspawn);
     loop.updatables.push(player);
     mapObject.add(player.mesh);
+
+    // add collectables
+    global.collectables = Collectable.createCollecables(loop.updatables);
+    mapObject.add(global.collectables);
 
     const input = new Input();
 
