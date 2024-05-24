@@ -6,7 +6,7 @@ import { createRenderer } from "./components/renderer.js";
 import { createScene } from "./components/scene.js";
 import { createSkybox } from "./components/skybox.js";
 import { createMapObject } from "./components/map.js";
-import { createMaterials } from "./components/material.js";
+import { createMaterials } from "./systems/material.js";
 
 import { map } from "../assets/maps/test.map.js";
 
@@ -20,7 +20,6 @@ let renderer;
 let scene;
 let loop;
 
-export const SUN_DIRECTION = new THREE.Vector3(0.3, 0.5, -1);
 
 export class World {
   constructor(canvas) {
@@ -28,6 +27,7 @@ export class World {
     scene = createScene();
     renderer = createRenderer(canvas);
     loop = new Loop(camera, scene, renderer);
+    loop.updatables.push(camera);
     global.materials = createMaterials();
     global.map = JSON.parse(JSON.stringify(map));
     global.endGame = this.onGameEnd;
@@ -58,7 +58,9 @@ export class World {
 
     this.input = new Input();
     const resizer = new Resizer(canvas, camera, renderer);
-    this.controls = new OrbitControls(camera, canvas);
+
+    // comment out following line to enable follow cam
+    // global.controls = new OrbitControls(camera, canvas);
   }
 
   render() {

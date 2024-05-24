@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SUN_DIRECTION } from "../world.js";
+import { SUN_DIRECTION } from "../components/skybox.js";
 
 import { vertexShaderSrc as defaultVertexShaderSrc } from "../shaders/diffuse.vert.js";
 import { fragmentShaderSrc as defaultFragmentShaderSrc } from "../shaders/diffuse.frag.js";
@@ -58,6 +58,19 @@ export function createMaterials() {
       glslVersion: THREE.GLSL3,
       name: "grassleaf-material",
       side: THREE.DoubleSide,
+    }),
+    player: new THREE.ShaderMaterial({
+      uniforms: {
+        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_diffuseColor: { value: new THREE.Vector3(1, 1, 0) },
+        u_specularIntensity: { value: 0.3 },
+        u_reflectionIntensity: { value: 0.05 },
+        u_skybox: { value: null },
+      },
+      vertexShader: defaultVertexShaderSrc,
+      fragmentShader: defaultFragmentShaderSrc,
+      glslVersion: THREE.GLSL3,
+      name: "player-material",
     }),
     collectable: new THREE.ShaderMaterial({
       uniforms: {

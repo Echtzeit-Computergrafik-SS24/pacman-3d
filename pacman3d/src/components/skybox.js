@@ -1,5 +1,8 @@
 import * as THREE from "three";
 
+
+export const SUN_DIRECTION = new THREE.Vector3(0.3, 0.5, -1);
+
 export function createSkybox() {
   const loader = new THREE.CubeTextureLoader();
   loader.setPath("assets/textures/skybox/");

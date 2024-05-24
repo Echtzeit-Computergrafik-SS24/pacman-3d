@@ -33,7 +33,7 @@ export class Player extends GameObject {
     super(position);
 
     const geometry = new THREE.SphereGeometry(0.45, 16, 16);
-    this.mesh = new THREE.Mesh(geometry, global.materials.default);
+    this.mesh = new THREE.Mesh(geometry, global.materials.player);
     this.mesh.name = "player";
     this.mesh.position.set(this.position[0], 0.5, this.position[1]);
 
