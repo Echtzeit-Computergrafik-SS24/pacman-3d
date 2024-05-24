@@ -32,6 +32,7 @@ export class World {
     global.map = JSON.parse(JSON.stringify(map));
     global.endGame = this.onGameEnd;
     global.restart = this.onRestart.bind(this);
+    global.winGame = this.onGameWon;
     global.clock = new THREE.Clock();
 
     // add map object
@@ -78,6 +79,17 @@ export class World {
     document.getElementById(
       "ui-var-score-gameover"
     ).textContent = `score: ${global.player.score}`;
+    document.getElementById("ui-var-title").textContent = "GAME OVER!";
+    loop.stop();
+  }
+
+  onGameWon() {
+    document.getElementById("ui-gameover").style.display = "flex";
+    document.getElementById("ui-playing").style.display = "none";
+    document.getElementById(
+      "ui-var-score-gameover"
+    ).textContent = `score: ${global.player.score}`;
+    document.getElementById("ui-var-title").textContent = "WINNER!";
     loop.stop();
   }
 

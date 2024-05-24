@@ -122,6 +122,11 @@ export class Player extends GameObject {
       global.collectables.remove(collectable);
       document.getElementById("ui-var-score").textContent = `${this.score}`;
     }
+
+    if (global.collectables.children.length === 0) {
+      // all collectables collected, game won
+      global.winGame();
+    }
   }
 }
 
