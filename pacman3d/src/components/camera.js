@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export const CAM_FOLLOW_STRENGTH = .5;
-export const CAM_FOLLOW_SMOOTHNESS = 0.1;
+export const CAM_FOLLOW_SPEED = 2;
 export const CAM_FOLLOW_OFFSET = new THREE.Vector3(0, 0, 3);
 
 export function createCamera() {
@@ -10,7 +10,7 @@ export function createCamera() {
   camera.name = "camera";
   camera.position.set(0, 7, 0).add(CAM_FOLLOW_OFFSET);
   camera.lookAt(new THREE.Vector3());
-  camera.tick = () => {
+  camera.tick = (deltaTime) => {
     if (global.player && !global.controls) {
       const targetPosition = new THREE.Vector3();
       global.player.mesh.getWorldPosition(targetPosition);
@@ -22,7 +22,7 @@ export function createCamera() {
 
       const v = targetPosition
         .sub(camera.position)
-        .multiplyScalar(CAM_FOLLOW_SMOOTHNESS);
+        .multiplyScalar(deltaTime * CAM_FOLLOW_SPEED);
 
       camera.position.add(v);
     }
