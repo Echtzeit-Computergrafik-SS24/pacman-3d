@@ -5,30 +5,61 @@ uniform vec3 u_lightDirection;
 uniform vec3 u_diffuseColor;
 uniform float u_specularIntensity;
 uniform float u_reflectionIntensity;
+uniform float u_ambientIntensity;
 uniform samplerCube u_skybox;
+uniform sampler2D u_textureDiffuse;
+uniform sampler2D u_textureNormal;
+uniform sampler2D u_textureSpecular;
+uniform bool u_useDiffuseMap;
+uniform bool u_useNormalMap;
+uniform bool u_useSpecularMap;
 
 in vec3 f_worldPos;
 in vec3 f_normal;
+in vec2 f_texCoord;
 
 out vec4 o_fragColor;
 
 void main() {
+    vec3 texDiffuse = texture(u_textureDiffuse, f_texCoord).rgb;
+    vec3 texNormal = texture(u_textureNormal, f_texCoord).rgb;
+    vec3 texSpecular = texture(u_textureSpecular, f_texCoord).rgb;
     
-    vec3 normal = normalize(f_normal);
+    vec3 normal;
+    if(u_useNormalMap) {
+        normal = normalize(texNormal * 2.0 - 1.0);
+    } else {
+        normal = normalize(f_normal);
+    }
+    
     vec3 viewDirection = normalize(cameraPosition - f_worldPos);
     vec3 halfWay = normalize(viewDirection + u_lightDirection);
 
-    // diffuse
-    float diffuseIntensity = max(0.0, dot(normal, u_lightDirection));
-    vec3 diffuse = diffuseIntensity * u_diffuseColor;
-
     // ambient
-    float ambientIntensity = .07;
-    vec3 ambient = vec3(ambientIntensity);
+    vec3 ambient;
+    if(u_useDiffuseMap) {
+        ambient = u_ambientIntensity * texDiffuse;
+    } else {
+        ambient = u_ambientIntensity * u_diffuseColor;
+    }
+
+    // diffuse
+    float diffuseIntensity = max(0.0, dot(normal, u_lightDirection)) * (1.0 - u_ambientIntensity);
+    vec3 diffuse;
+    if(u_useDiffuseMap) {
+        diffuse = diffuseIntensity * texDiffuse;
+    } else {
+        diffuse = diffuseIntensity * u_diffuseColor;
+    }
 
     // specular
     float specularIntensity = pow(max(.0, dot(normal, halfWay)), 64.0) * u_specularIntensity;
-    vec3 specular = vec3(specularIntensity);
+    vec3 specular;
+    if(u_useSpecularMap) {
+        specular = vec3(specularIntensity) * texSpecular;
+    } else {
+        specular = vec3(specularIntensity);
+    } 
 
     // cubemap reflection
     vec3 reflectionDirection = reflect(viewDirection, normal);
@@ -39,4 +70,3 @@ void main() {
     o_fragColor = vec4(mix(vec3(ambient + diffuse + specular), reflection, u_reflectionIntensity), 1.0);
 }
 `;
-

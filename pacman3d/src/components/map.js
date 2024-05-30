@@ -40,7 +40,7 @@ export function createMapObject(mapdata) {
           break;
         case TileType.WALL:
           const geometry = new THREE.BoxGeometry(1, 1, 1);
-          const cube = new THREE.Mesh(geometry, global.materials.default);
+          const cube = new THREE.Mesh(geometry, global.materials.wall);
           cube.position.set(x, 0.5, y);
           group.add(cube);
           break;

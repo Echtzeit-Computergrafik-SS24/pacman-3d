@@ -20,7 +20,6 @@ let renderer;
 let scene;
 let loop;
 
-
 export class World {
   constructor(canvas) {
     camera = createCamera();
