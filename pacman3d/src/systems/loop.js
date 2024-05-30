@@ -1,3 +1,4 @@
+
 export class Loop {
   constructor(camera, scene, renderer) {
     this.camera = camera;
@@ -8,7 +9,7 @@ export class Loop {
 
   start() {
     this.renderer.setAnimationLoop(() => {
-      const time = global.clock.getElapsedTime();
+      const time = global.clock.elapsedTime;
 
       // update shader uniforms
       global.materials.grassleaf.uniforms.u_time.value = time;

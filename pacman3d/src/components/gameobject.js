@@ -2,6 +2,8 @@ import * as THREE from "three";
 
 import { TileType } from "./map.js";
 
+import { loadGeometryFromOBJ } from "../systems/loader.js";
+
 export const Direction = {
   NONE: 0,
   UP: 1,
@@ -32,8 +34,9 @@ export class Player extends GameObject {
   constructor(position) {
     super(position);
 
-    const geometry = new THREE.SphereGeometry(0.45, 16, 16);
-    this.mesh = new THREE.Mesh(geometry, global.materials.default);
+    this.mesh = new THREE.Mesh();
+    loadGeometryFromOBJ("assets/models/player.obj", this.mesh);
+    this.mesh.material = global.materials.player;
     this.mesh.name = "player";
     this.mesh.position.set(this.position[0], 0.5, this.position[1]);
 
@@ -88,14 +91,17 @@ export class Player extends GameObject {
   }
 
   move(deltaTime) {
-    const time = global.clock.getElapsedTime();
+    const time = global.clock.elapsedTime;
     if (time < this.nextMoveTime) return;
 
     const nextDirection = this.getNextDirection();
     if (nextDirection == Direction.NONE) return;
 
+    // move logical position on mpa
     this.position[0] += DirectionValues[nextDirection][0];
     this.position[1] += DirectionValues[nextDirection][1];
+
+    // move mesh
     this.mesh.position.add(
       new THREE.Vector3(
         DirectionValues[nextDirection][0],
@@ -103,6 +109,14 @@ export class Player extends GameObject {
         DirectionValues[nextDirection][1]
       )
     );
+
+    // rotate mesh
+    const rad = Math.atan2(
+      DirectionValues[nextDirection][0],
+      DirectionValues[nextDirection][1]
+    );
+    this.mesh.rotation.y = rad;
+
     this.nextMoveTime = time + this.timeBetweenMoves;
     this.pickUpCollectable();
   }
@@ -121,6 +135,11 @@ export class Player extends GameObject {
       this.score++;
       global.collectables.remove(collectable);
       document.getElementById("ui-var-score").textContent = `${this.score}`;
+    }
+
+    if (global.collectables.children.length === 0) {
+      // all collectables collected, game won
+      global.winGame();
     }
   }
 }
@@ -147,7 +166,7 @@ export class Enemy extends GameObject {
   }
 
   move(deltaTime) {
-    const time = global.clock.getElapsedTime();
+    const time = global.clock.elapsedTime;
     if (time < this.nextMoveTime) return;
 
     const nextDirection = this.getNextDirection();
@@ -320,12 +339,29 @@ export class Collectable extends GameObject {
   constructor(position) {
     super(position);
 
-    const geometry = new THREE.SphereGeometry(0.2, 16, 16);
-    this.mesh = new THREE.Mesh(geometry, global.materials.collectable);
-    this.mesh.position.set(this.position[0], 0.5, this.position[1]);
+    this.yPosition = 0.5;
+    this.bounceHeight = 0.1;
+    this.bounceSpeed = 2.0;
+
+    this.mesh = new THREE.Mesh();
+    loadGeometryFromOBJ("assets/models/coin.obj", this.mesh);
+    this.mesh.material = global.materials.collectable;
+    this.mesh.position.set(this.position[0], this.yPosition, this.position[1]);
   }
 
-  tick(deltaTime) {}
+  tick(deltaTime) {
+    const time = global.clock.elapsedTime;
+
+    // animate rotation
+    const radPerSecond = THREE.MathUtils.degToRad(90);
+    this.mesh.rotation.y += radPerSecond * deltaTime;
+
+    // animate bounce
+    const bounce =
+      Math.sin(time * this.bounceSpeed + this.position[0] + this.position[1]) *
+      this.bounceHeight;
+    this.mesh.position.setY(this.yPosition + bounce);
+  }
 
   static createCollecables(updatables) {
     const group = new THREE.Group();

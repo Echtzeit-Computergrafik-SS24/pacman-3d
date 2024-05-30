@@ -3,6 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
     <style>
       html,
       body {
@@ -26,6 +32,7 @@
         font-family: "Gill Sans", sans-serif;
         font-size: 20px;
         font-weight: bold;
+        color: white;
         display: flex;
         flex-direction: column;
       }
@@ -38,11 +45,34 @@
         margin: 20px;
       }
 
+      .ui-container > span {
+        text-shadow: 2px 2px 5px black;
+      }
+
+      @keyframes background-keyframes {
+        from {
+          backdrop-filter: blur(0px);
+        }
+        to {
+          backdrop-filter: blur(5px);
+        }
+      }
+
       #ui-gameover {
         display: none;
         align-items: center;
         justify-content: center;
-        backdrop-filter: blur(3px);
+        backdrop-filter: blur(5px);
+        animation-name: background-keyframes;
+        animation-duration: 1s;
+      }
+
+      #restart-button {
+        border-radius: 10px;
+      }
+
+      #restart-button:hover {
+        border: 2px solid grey;
       }
     </style>
 
@@ -63,7 +93,7 @@
         <div><span>score: </span><span id="ui-var-score">0</span></div>
       </div>
       <div id="ui-gameover" class="ui-container">
-        <span style="font-size: 60px">GAME OVER</span>
+        <span id="ui-var-title" style="font-size: 60px"></span>
         <span id="ui-var-score-gameover" style="font-size: 30px"></span>
         <button id="restart-button" type="button">Restart</button>
       </div>
