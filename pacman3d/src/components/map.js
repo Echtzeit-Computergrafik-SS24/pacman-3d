@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const TileType = {
   GROUND: 0,
@@ -39,7 +40,8 @@ export function createMapObject(mapdata) {
           group.add(groundTile);
           break;
         case TileType.WALL:
-          const geometry = new THREE.BoxGeometry(1, 1, 1);
+          let geometry = new THREE.BoxGeometry(1, 1, 1);
+          geometry.computeTangents();
           const cube = new THREE.Mesh(geometry, global.materials.wall);
           cube.position.set(x, 0.5, y);
           group.add(cube);

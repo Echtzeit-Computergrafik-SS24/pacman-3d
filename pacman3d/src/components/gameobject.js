@@ -169,6 +169,8 @@ export class Enemy extends GameObject {
     const time = global.clock.elapsedTime;
     if (time < this.nextMoveTime) return;
 
+    return; // TODO: remove me
+
     const nextDirection = this.getNextDirection();
     if (nextDirection == Direction.NONE) return;
 

@@ -143,9 +143,7 @@ export function createMaterials() {
         u_skybox: { value: null },
         u_useDiffuseMap: { value: true },
         u_textureDiffuse: { value: null },
-        u_useNormalMap: {
-          value: false /* keep false, not properly implemented yet */,
-        },
+        u_useNormalMap: { value: false },
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: true },
         u_textureSpecular: { value: null },

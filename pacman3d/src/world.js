@@ -59,7 +59,7 @@ export class World {
     const resizer = new Resizer(canvas, camera, renderer);
 
     // comment out following line to enable follow cam
-    // global.controls = new OrbitControls(camera, canvas);
+    global.controls = new OrbitControls(camera, canvas);
   }
 
   render() {

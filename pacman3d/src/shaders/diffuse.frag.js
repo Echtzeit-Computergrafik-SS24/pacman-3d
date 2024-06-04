@@ -17,6 +17,7 @@ uniform bool u_useSpecularMap;
 in vec3 f_worldPos;
 in vec3 f_normal;
 in vec2 f_texCoord;
+in mat3 f_TBN;
 
 out vec4 o_fragColor;
 
@@ -27,7 +28,7 @@ void main() {
     
     vec3 normal;
     if(u_useNormalMap) {
-        normal = normalize(texNormal * 2.0 - 1.0);
+        normal = normalize(f_TBN * (texNormal * 2.0 - 1.0));
     } else {
         normal = normalize(f_normal);
     }
