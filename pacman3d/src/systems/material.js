@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SUN_DIRECTION } from "../components/skybox.js";
+import { SUN_DIRECTION, SUN_POSITION } from "../components/skybox.js";
 
 import { vertexShaderSrc as defaultVertexShaderSrc } from "../shaders/diffuse.vert.js";
 import { fragmentShaderSrc as defaultFragmentShaderSrc } from "../shaders/diffuse.frag.js";
@@ -8,11 +8,12 @@ import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "../shaders/skybox.
 import { vertexShaderSrc as grassVertexShaderSrc } from "../shaders/grassLeaf.vert.js";
 import { fragmentShaderSrc as grassFragmentShaderSrc } from "../shaders/grassLeaf.frag.js";
 
+
 export function createMaterials() {
   const materials = {
     default: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -42,7 +43,7 @@ export function createMaterials() {
     }),
     ground: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(0.41, 1.0, 0.5) },
         u_specularIntensity: { value: 0.2 },
         u_reflectionIntensity: { value: 0.05 },
@@ -75,7 +76,7 @@ export function createMaterials() {
     }),
     player: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -95,7 +96,7 @@ export function createMaterials() {
     }),
     collectable: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -115,7 +116,7 @@ export function createMaterials() {
     }),
     enemy: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(1, 0, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -135,7 +136,7 @@ export function createMaterials() {
     }),
     wall: new THREE.ShaderMaterial({
       uniforms: {
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.0 },
@@ -143,7 +144,7 @@ export function createMaterials() {
         u_skybox: { value: null },
         u_useDiffuseMap: { value: true },
         u_textureDiffuse: { value: null },
-        u_useNormalMap: { value: false },
+        u_useNormalMap: { value: true },
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: true },
         u_textureSpecular: { value: null },
@@ -163,6 +164,7 @@ export function createMaterials() {
     "rockwall-diffuse.avif",
     (texture) => {
       global.materials.wall.uniforms.u_textureDiffuse.value = texture;
+      global.materials.test.uniforms.u_textureDiffuse.value = texture;
     },
     undefined,
     (error) => {
@@ -174,6 +176,9 @@ export function createMaterials() {
     "rockwall-normal.avif",
     (texture) => {
       global.materials.wall.uniforms.u_textureNormal.value = texture;
+
+      // only set normalMap if u_useNormalMap is true
+      global.materials.wall.normalMap = texture;
     },
     undefined,
     (error) => {
@@ -185,6 +190,7 @@ export function createMaterials() {
     "rockwall-specular.avif",
     (texture) => {
       global.materials.wall.uniforms.u_textureSpecular.value = texture;
+      global.materials.test.uniforms.u_textureSpecular.value = texture;
     },
     undefined,
     (error) => {
