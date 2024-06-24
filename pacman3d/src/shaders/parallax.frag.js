@@ -9,9 +9,11 @@ uniform samplerCube u_skybox;
 uniform sampler2D u_textureDiffuse;
 uniform sampler2D u_textureNormal;
 uniform sampler2D u_textureSpecular;
+uniform sampler2D u_textureDepth;
 uniform bool u_useDiffuseMap;
 uniform bool u_useNormalMap;
 uniform bool u_useSpecularMap;
+uniform bool u_useDepthMap;
 
 in vec3 f_normal;
 in vec3 f_worldPos;
@@ -21,10 +23,27 @@ in vec2 f_texCoord;
 
 out vec4 o_fragColor;
 
+vec2 parallax_mapping(vec3);
+
 void main() {
-    vec3 texDiffuse = texture(u_textureDiffuse, f_texCoord).rgb;
-    vec3 texNormal = texture(u_textureNormal, f_texCoord).rgb;
-    vec3 texSpecular = texture(u_textureSpecular, f_texCoord).rgb;
+
+    // parallax
+    vec3 viewDir = normalize(f_viewPos - f_worldPos);
+    vec2 texCoords;
+    if(u_useDepthMap) {
+        texCoords = parallax_mapping(viewDir);
+        if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0) {
+            discard;
+        }
+    } else {
+        texCoords = f_texCoord;
+    }
+
+
+    // textures
+    vec3 texDiffuse = texture(u_textureDiffuse, texCoords).rgb;
+    vec3 texNormal = texture(u_textureNormal, texCoords).rgb;
+    vec3 texSpecular = texture(u_textureSpecular, texCoords).rgb;
     
 
     vec3 normal;
@@ -36,7 +55,6 @@ void main() {
     }
 
     vec3 lightDir = normalize(f_lightPos - f_worldPos);
-    vec3 viewDir = normalize(f_viewPos - f_worldPos);
     vec3 halfWay = normalize(viewDir + lightDir);
 
     // ambient
@@ -72,5 +90,31 @@ void main() {
 
     // o_fragColor = vec4(ambient + diffuse + specular, 1.0);
     o_fragColor = vec4(mix(vec3(ambient + diffuse + specular), reflection, u_reflectionIntensity), 1.0);
+}
+
+const float parallaxScale = 0.04;
+const float minLayers = 16.0;
+const float maxLayers = 64.0;
+
+vec2 parallax_mapping(vec3 viewDir) {
+    float numLayers = mix(maxLayers, minLayers, smoothstep(0.0, 1.0, max(dot(vec3(0.0, 0.0, 1.0), viewDir), 0.0)));
+    vec2 texCoordsDelta = (viewDir.xy * parallaxScale) / (viewDir.z * numLayers);
+    vec2 currentTexCoords = f_texCoord;
+    float currentDepthMapValue = 1.0 - texture(u_textureDepth, currentTexCoords).r;
+    float prevDepthMapValue = currentDepthMapValue;
+
+    float i = 0.0;
+    for(;i / numLayers < currentDepthMapValue; i += 1.0) {
+        prevDepthMapValue = currentDepthMapValue;
+        currentTexCoords -= texCoordsDelta;
+        currentDepthMapValue = 1.0 - texture(u_textureDepth, currentTexCoords).r;
+    }
+
+    // get depth after and before collision for linear interpolation
+    float afterDepth = currentDepthMapValue - i / numLayers;
+    float beforeDepth = prevDepthMapValue - max(i - 1.0, 0.0) / numLayers;
+
+    float fraction = afterDepth / (afterDepth - beforeDepth);
+    return currentTexCoords + (texCoordsDelta * fraction);
 }
 `;

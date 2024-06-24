@@ -18,6 +18,11 @@
         background-color: rgb(20, 20, 20);
       }
 
+      canvas {
+        width: 90vw;
+        height: 90vh;
+      }
+
       #container {
         display: grid;
         place-items: center;
@@ -27,8 +32,8 @@
 
       .ui-container {
         position: absolute;
-        width: 800px;
-        height: 450px;
+        width: 90vw;
+        height: 90vh;
         font-family: "Gill Sans", sans-serif;
         font-size: 20px;
         font-weight: bold;
@@ -88,7 +93,7 @@
 
   <body>
     <div id="container">
-      <canvas id="canvas" width="800" height="450" tabindex="0"></canvas>
+      <canvas id="canvas" tabindex="0"></canvas>
       <div id="ui-playing" class="ui-container">
         <div><span>score: </span><span id="ui-var-score">0</span></div>
       </div>

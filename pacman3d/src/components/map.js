@@ -22,9 +22,12 @@ export function createMapObject(mapdata) {
         case TileType.ENEMY_SPAWN:
         case TileType.GROUND:
           const groundTile = new THREE.Group();
-          groundTile.position.set(x, 0, y);
+          groundTile.position.set(x, 0.1, y);
 
-          const groundGeometry = new THREE.PlaneGeometry(1, 1);
+          /*
+          const scale = 1.0;
+          const groundGeometry = new THREE.PlaneGeometry(scale, scale);
+          groundGeometry.computeTangents();
           const ground = new THREE.Mesh(
             groundGeometry,
             global.materials.ground
@@ -36,12 +39,26 @@ export function createMapObject(mapdata) {
           const grass = createGrass(1, 1, 0.3, 500);
           groundTile.add(grass);
 
+          group.add(groundTile); */
+
+          const scale = 1.025;
+          const groundGeometry = new THREE.PlaneGeometry(scale, scale);
+          groundGeometry.computeTangents();
+          const ground = new THREE.Mesh(
+            groundGeometry,
+            global.materials.ground_parallax
+          );
+          ground.rotation.x = THREE.MathUtils.degToRad(-90);
+          ground.name = `ground-${x}-${y}`;
+          groundTile.add(ground);
           group.add(groundTile);
           break;
         case TileType.WALL:
+          const wallHeight = 0.5;
           const geometry = new THREE.BoxGeometry(1, 1, 1);
+          geometry.computeTangents();
           const cube = new THREE.Mesh(geometry, global.materials.wall);
-          cube.position.set(x, 0.5, y);
+          cube.position.set(x, wallHeight - 0.5, y);
           group.add(cube);
           break;
       }
