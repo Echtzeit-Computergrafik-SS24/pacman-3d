@@ -4,7 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createCamera } from "./components/camera.js";
 import { createRenderer } from "./components/renderer.js";
 import { createScene } from "./components/scene.js";
-import { createSkybox } from "./components/skybox.js";
+import { SUN_POSITION, createSkybox } from "./components/skybox.js";
 import { createMapObject } from "./components/map.js";
 import { createMaterials } from "./systems/material.js";
 
@@ -36,7 +36,7 @@ export class World {
 
     // add map object
     const mapObject = createMapObject(global.map.data);
-    scene.add(mapObject);
+    scene.add(mapObject); 
 
     // add skybox
     const skybox = createSkybox();
@@ -58,8 +58,16 @@ export class World {
     this.input = new Input();
     const resizer = new Resizer(canvas, camera, renderer);
 
+    /* const arrow = new THREE.ArrowHelper(
+      SUN_POSITION.clone().normalize(),
+      new THREE.Vector3(0, 0, 0),
+      SUN_POSITION.length(),
+      0xff0000
+    );
+    scene.add(arrow); */
+
     // comment out following line to enable follow cam
-    global.controls = new OrbitControls(camera, canvas);
+    // global.controls = new OrbitControls(camera, canvas);
   }
 
   render() {

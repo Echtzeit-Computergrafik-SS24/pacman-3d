@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export const SUN_POSITION = new THREE.Vector3(10.0, 10.0, 10.0);
+export const SUN_POSITION = new THREE.Vector3(3.75, 5.5, -10.0);
 export const SUN_DIRECTION = SUN_POSITION.clone().multiplyScalar(-1);
 
 
@@ -41,6 +41,7 @@ export function createSkybox() {
 
   const skyboxGeometry = new THREE.BoxGeometry(20, 20, 20);
   const skybox = new THREE.Mesh(skyboxGeometry, global.materials.skybox);
+  skybox.rotation.x = Math.PI / 4;
   skybox.name = "skybox";
   return skybox;
 }
