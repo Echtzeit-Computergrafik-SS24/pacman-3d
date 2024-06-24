@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export const SUN_POSITION = new THREE.Vector3(3.75, 5.5, -10.0);
+export const SUN_POSITION = new THREE.Vector3(3.75, 5.5, -10.0).multiplyScalar(5);
 export const SUN_DIRECTION = SUN_POSITION.clone().multiplyScalar(-1);
 
 

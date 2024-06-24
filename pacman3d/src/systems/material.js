@@ -41,7 +41,7 @@ export function createMaterials() {
       name: "skybox-material",
       side: THREE.BackSide,
     }),
-    ground: new THREE.ShaderMaterial({
+    environment: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
         u_diffuseColor: { value: new THREE.Vector3(0.41, 1.0, 0.5) },
@@ -59,7 +59,7 @@ export function createMaterials() {
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
       glslVersion: THREE.GLSL3,
-      name: "ground-material",
+      name: "environment-material",
     }),
     grassleaf: new THREE.ShaderMaterial({
       uniforms: {

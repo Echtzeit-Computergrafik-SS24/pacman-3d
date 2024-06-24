@@ -1,4 +1,3 @@
-
 export class Loop {
   constructor(camera, scene, renderer) {
     this.camera = camera;
@@ -15,7 +14,11 @@ export class Loop {
       global.materials.grassleaf.uniforms.u_time.value = time;
 
       // update updatable objects
-      this.tick();
+      const deltaTime = global.clock.getDelta();
+      this.tick(deltaTime);
+
+      // calculate fps
+      document.getElementById("ui-var-fps").textContent = `${(1.0 / deltaTime).toFixed(0)}`;
 
       // check each pressed key if it was pressed in the frame before
       for (let [key, value] of Object.entries(global.keys)) {
@@ -33,12 +36,10 @@ export class Loop {
     this.renderer.setAnimationLoop(null);
   }
 
-  tick() {
-    const deltaTime = global.clock.getDelta();
-
+  tick(delta) {
     for (const object of this.updatables) {
       if (object.tick) {
-        object.tick(deltaTime);
+        object.tick(delta);
       }
     }
   }
