@@ -299,17 +299,6 @@ export function createMaterials() {
       console.log(error);
     }
   );
-  // depth
-  loader.load(
-    "meadow-depth.png",
-    (texture) => {
-      materials.grass.uniforms.u_textureDepth.value = texture;
-    },
-    undefined,
-    (error) => {
-      console.log(error);
-    }
-  );
 
   // set normalMap-property of each material
   // with u_useNormalMap == true
