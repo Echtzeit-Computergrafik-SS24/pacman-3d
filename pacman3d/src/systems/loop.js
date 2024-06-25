@@ -18,7 +18,8 @@ export class Loop {
       this.tick(deltaTime);
 
       // calculate fps
-      document.getElementById("ui-var-fps").textContent = `${(1.0 / deltaTime).toFixed(0)}`;
+      const fpsElem = document.getElementById("ui-var-fps");
+      if(fpsElem) fpsElem.textContent = `${(1.0 / deltaTime).toFixed(0)}`;
 
       // check each pressed key if it was pressed in the frame before
       for (let [key, value] of Object.entries(global.keys)) {

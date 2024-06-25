@@ -12,7 +12,7 @@ out vec4 o_fragColor;
 
 void main() {
     vec3 normal = normalize(f_normal);
-    vec3 color = vec3(.41, 1.0, .5);
+    vec3 color = vec3(0.08,0.2,0.02);
 
     // diffuse
     float diffuseIntensity = max(0.0, dot(normal, u_lightDirection));

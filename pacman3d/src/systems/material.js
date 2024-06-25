@@ -41,25 +41,25 @@ export function createMaterials() {
       name: "skybox-material",
       side: THREE.BackSide,
     }),
-    environment: new THREE.ShaderMaterial({
+    grass: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
-        u_diffuseColor: { value: new THREE.Vector3(0.41, 1.0, 0.5) },
+        u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.2 },
         u_reflectionIntensity: { value: 0.05 },
         u_ambientIntensity: { value: 0.07 },
         u_skybox: { value: null },
-        u_useDiffuseMap: { value: false },
+        u_useDiffuseMap: { value: true },
         u_textureDiffuse: { value: null },
-        u_useNormalMap: { value: false },
+        u_useNormalMap: { value: true },
         u_textureNormal: { value: null },
-        u_useSpecularMap: { value: false },
+        u_useSpecularMap: { value: true },
         u_textureSpecular: { value: null },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
       glslVersion: THREE.GLSL3,
-      name: "environment-material",
+      name: "grass-material",
     }),
     grassleaf: new THREE.ShaderMaterial({
       uniforms: {
@@ -97,7 +97,7 @@ export function createMaterials() {
     collectable: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
-        u_diffuseColor: { value: new THREE.Vector3(1, 1, 0) },
+        u_diffuseColor: { value: new THREE.Vector3(1, 0.8, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
         u_ambientIntensity: { value: 0.1 },
@@ -255,6 +255,55 @@ export function createMaterials() {
     "pebbles-depth.webp",
     (texture) => {
       materials.ground_parallax.uniforms.u_textureDepth.value = texture;
+    },
+    undefined,
+    (error) => {
+      console.log(error);
+    }
+  );
+
+
+  // grass texture
+  // load ground parallax textures
+  loader.setPath("assets/textures/meadow/");
+  // diffuse
+  loader.load(
+    "meadow-diffuse.png",
+    (texture) => {
+      materials.grass.uniforms.u_textureDiffuse.value = texture;
+    },
+    undefined,
+    (error) => {
+      console.log(error);
+    }
+  );
+  // normal
+  loader.load(
+    "meadow-normal.png",
+    (texture) => {
+      materials.grass.uniforms.u_textureNormal.value = texture;
+    },
+    undefined,
+    (error) => {
+      console.log(error);
+    }
+  );
+  // specular
+  loader.load(
+    "meadow-specular.png",
+    (texture) => {
+      materials.grass.uniforms.u_textureSpecular.value = texture;
+    },
+    undefined,
+    (error) => {
+      console.log(error);
+    }
+  );
+  // depth
+  loader.load(
+    "meadow-depth.png",
+    (texture) => {
+      materials.grass.uniforms.u_textureDepth.value = texture;
     },
     undefined,
     (error) => {

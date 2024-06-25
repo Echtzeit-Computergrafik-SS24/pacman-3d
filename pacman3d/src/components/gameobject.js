@@ -28,6 +28,10 @@ class GameObject {
   tick(deltaTime) {
     throw new Error("method not overwritten");
   }
+
+  isWalkable(tile) {
+    return tile != TileType.WALL && tile != TileType.GRASS;
+  }
 }
 
 export class Player extends GameObject {
@@ -122,7 +126,7 @@ export class Player extends GameObject {
   }
 
   canMoveTo(coord) {
-    return global.map.data[coord[1]][coord[0]] !== TileType.WALL;
+    return this.isWalkable(global.map.data[coord[1]][coord[0]]);
   }
 
   pickUpCollectable() {
@@ -168,8 +172,6 @@ export class Enemy extends GameObject {
   move(deltaTime) {
     const time = global.clock.elapsedTime;
     if (time < this.nextMoveTime) return;
-
-    return; // TODO: remove me
 
     const nextDirection = this.getNextDirection();
     if (nextDirection == Direction.NONE) return;
@@ -232,9 +234,9 @@ export class Enemy extends GameObject {
     const tileLeft = global.map.data[positionTurnLeft[1]][positionTurnLeft[0]];
 
     if (
-      tileInFront !== TileType.WALL &&
-      tileRight === TileType.WALL &&
-      tileLeft === TileType.WALL
+      this.isWalkable(tileInFront) &&
+      !this.isWalkable(tileRight) &&
+      !this.isWalkable(tileLeft)
     ) {
       // if we can only move to next tile, keep current direction
       return this.currentDirection;
@@ -305,7 +307,7 @@ export class Enemy extends GameObject {
 
     const nextTile = global.map.data[nextPosition[1]][nextPosition[0]];
 
-    return nextTile !== TileType.WALL;
+    return this.isWalkable(nextTile);
   }
 
   checkForPlayerCollision() {
