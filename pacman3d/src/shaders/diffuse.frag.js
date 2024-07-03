@@ -53,7 +53,7 @@ void main() {
     }
 
     // diffuse
-    float diffuseIntensity = max(0.0, dot(normal, lightDir)) * (1.0 - u_ambientIntensity);
+    float diffuseIntensity = max(0.0, dot(normal, lightDir));
     vec3 diffuse;
     if(u_useDiffuseMap) {
         diffuse = diffuseIntensity * texDiffuse;
@@ -78,9 +78,7 @@ void main() {
     // shadow
     float shadow = calculateShadow();
 
-    // o_fragColor = vec4(vec3(shadow), 1.0);
-    // o_fragColor = vec4(ambient + diffuse + specular, 1.0);
-    o_fragColor = vec4(mix(vec3((ambient + shadow) * (diffuse + specular)), reflection, u_reflectionIntensity), 1.0);
+    o_fragColor = vec4(mix(vec3(ambient + shadow * (diffuse + specular)), reflection, u_reflectionIntensity), 1.0);
 }
 
 
