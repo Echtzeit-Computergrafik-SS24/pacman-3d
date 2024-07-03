@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SUN_DIRECTION, SUN_POSITION } from "../components/skybox.js";
+import { SUN_DIRECTION, SUN_POSITION } from "../components/light.js";
 
 import { vertexShaderSrc as defaultVertexShaderSrc } from "../shaders/diffuse.vert.js";
 import { fragmentShaderSrc as defaultFragmentShaderSrc } from "../shaders/diffuse.frag.js";
@@ -8,6 +8,8 @@ import { fragmentShaderSrc as skyboxFragmentShaderSrc } from "../shaders/skybox.
 import { vertexShaderSrc as grassVertexShaderSrc } from "../shaders/grassLeaf.vert.js";
 import { fragmentShaderSrc as grassFragmentShaderSrc } from "../shaders/grassLeaf.frag.js";
 import { fragmentShaderSrc as parallaxFragmentShaderSrc } from "../shaders/parallax.frag.js";
+import { vertexShaderSrc as shadowVertexShaderSrc } from "../shaders/shadow.vert.js";
+import { fragmentShaderSrc as shadowFragmentShaderSrc } from "../shaders/shadow.frag.js";
 
 export function createMaterials() {
   const materials = {
@@ -25,6 +27,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: false },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -55,6 +64,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: true },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -88,6 +104,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: false },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -108,6 +131,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: false },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -128,6 +158,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: false },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -148,6 +185,13 @@ export function createMaterials() {
         u_textureNormal: { value: null },
         u_useSpecularMap: { value: true },
         u_textureSpecular: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: defaultFragmentShaderSrc,
@@ -170,11 +214,25 @@ export function createMaterials() {
         u_textureSpecular: { value: null },
         u_useDepthMap: { value: true },
         u_textureDepth: { value: null },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: defaultVertexShaderSrc,
       fragmentShader: parallaxFragmentShaderSrc,
       glslVersion: THREE.GLSL3,
       name: "ground_parallax-material",
+    }),
+    shadow: new THREE.ShaderMaterial({
+      uniforms: {},
+      vertexShader: shadowVertexShaderSrc,
+      fragmentShader: shadowFragmentShaderSrc,
+      glslVersion: THREE.GLSL3,
+      name: "shadow-material",
     }),
   };
 
@@ -261,7 +319,6 @@ export function createMaterials() {
       console.log(error);
     }
   );
-
 
   // grass texture
   // load ground parallax textures

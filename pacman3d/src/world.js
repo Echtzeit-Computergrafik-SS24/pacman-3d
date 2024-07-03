@@ -4,9 +4,10 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createCamera } from "./components/camera.js";
 import { createRenderer } from "./components/renderer.js";
 import { createScene } from "./components/scene.js";
-import { SUN_POSITION, createSkybox } from "./components/skybox.js";
+import { createSkybox } from "./components/skybox.js";
 import { createMapObject } from "./components/map.js";
 import { createMaterials } from "./systems/material.js";
+import { SUN_DIRECTION, SUN_POSITION } from "./components/light.js";
 
 import { map } from "../assets/maps/test.map.js";
 
@@ -14,6 +15,7 @@ import { Resizer } from "./systems/resizer.js";
 import { Loop } from "./systems/loop.js";
 import { Collectable, Player, Enemy } from "./components/gameobject.js";
 import { Input } from "./systems/input.js";
+import { createLight } from "./components/light.js";
 
 let camera;
 let renderer;
@@ -27,6 +29,7 @@ export class World {
     renderer = createRenderer(canvas);
     loop = new Loop(camera, scene, renderer);
     loop.updatables.push(camera);
+    global.light = createLight();
     global.materials = createMaterials();
     global.map = JSON.parse(JSON.stringify(map));
     global.endGame = this.onGameEnd;
@@ -67,7 +70,7 @@ export class World {
     scene.add(arrow); */
 
     // comment out following line to enable follow cam
-    // global.controls = new OrbitControls(camera, canvas);
+    global.controls = new OrbitControls(camera, canvas);
   }
 
   render() {

@@ -2,6 +2,8 @@ export const vertexShaderSrc = `
 precision highp float;
 
 uniform vec3 u_lightPosition;
+uniform mat4 u_shadowCameraP;
+uniform mat4 u_shadowCameraV;
 
 
 out vec3 f_normal;
@@ -9,6 +11,7 @@ out vec3 f_worldPos;
 out vec3 f_lightPos;
 out vec3 f_viewPos;
 out vec2 f_texCoord;
+out vec4 f_shadowCoord;
 
 
 void main() {
@@ -35,5 +38,6 @@ void main() {
 #endif
 
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
+    f_shadowCoord = u_shadowCameraP * u_shadowCameraV * modelMatrix * vec4(position, 1.0);
 }
 `;

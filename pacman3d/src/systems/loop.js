@@ -28,7 +28,30 @@ export class Loop {
         }
       }
 
-      // render image
+      // shadow map rendering
+      //
+      // save original material of each object in scene
+      // and apply shadow material
+      this.scene.traverse((elem) => {
+        if (!elem.isMesh) return;
+
+        elem.material_orig = elem.material;
+        elem.material = global.materials.shadow;
+      });
+
+      // render scene to shadow map from shadow camera perspective
+      this.renderer.setRenderTarget(global.light.shadow.map);
+      this.renderer.render(this.scene, global.light.shadow.camera);
+
+      // restore original material for each object in scene
+      this.scene.traverse((elem) => {
+        if (!elem.isMesh) return;
+
+        elem.material = elem.material_orig;
+      });
+
+      // render scene to canvas
+      this.renderer.setRenderTarget(null);
       this.renderer.render(this.scene, this.camera);
     });
   }
