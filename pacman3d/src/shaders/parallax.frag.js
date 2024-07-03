@@ -10,20 +10,25 @@ uniform sampler2D u_textureDiffuse;
 uniform sampler2D u_textureNormal;
 uniform sampler2D u_textureSpecular;
 uniform sampler2D u_textureDepth;
+uniform sampler2D u_shadowMap;
 uniform bool u_useDiffuseMap;
 uniform bool u_useNormalMap;
 uniform bool u_useSpecularMap;
 uniform bool u_useDepthMap;
+
 
 in vec3 f_normal;
 in vec3 f_worldPos;
 in vec3 f_lightPos;
 in vec3 f_viewPos;
 in vec2 f_texCoord;
+in vec4 f_shadowCoord;
 
 out vec4 o_fragColor;
 
 vec2 parallax_mapping(vec3);
+float unpackRGBAToDepth( const in vec4 );
+float calculateShadow();
 
 void main() {
 
@@ -66,7 +71,7 @@ void main() {
     }
 
     // diffuse
-    float diffuseIntensity = max(0.0, dot(normal, lightDir)) * (1.0 - u_ambientIntensity);
+    float diffuseIntensity = max(0.0, dot(normal, lightDir));
     vec3 diffuse;
     if(u_useDiffuseMap) {
         diffuse = diffuseIntensity * texDiffuse;
@@ -83,13 +88,15 @@ void main() {
         specular = vec3(specularIntensity);
     } 
 
+    // shadow
+    float shadow = calculateShadow();
+
     // cubemap reflection
     vec3 reflectionDirection = reflect(viewDir, normal);
     reflectionDirection.x = -reflectionDirection.x;
     vec3 reflection = texture(u_skybox, reflectionDirection).rgb;
 
-    // o_fragColor = vec4(ambient + diffuse + specular, 1.0);
-    o_fragColor = vec4(mix(vec3(ambient + diffuse + specular), reflection, u_reflectionIntensity), 1.0);
+    o_fragColor = vec4(mix(vec3(ambient + shadow * (diffuse + specular)), reflection, u_reflectionIntensity), 1.0);
 }
 
 const float parallaxScale = 0.04;
@@ -116,5 +123,29 @@ vec2 parallax_mapping(vec3 viewDir) {
 
     float fraction = afterDepth / (afterDepth - beforeDepth);
     return currentTexCoords + (texCoordsDelta * fraction);
+}
+
+const float UnpackDownscale = 255. / 256.;
+const vec3 PackFactors = vec3( 256. * 256. * 256., 256. * 256., 256. );
+const vec4 UnpackFactors = UnpackDownscale / vec4( PackFactors, 1. );
+
+float unpackRGBAToDepth( const in vec4 v ) {
+	return dot( v, UnpackFactors );
+}
+
+float calculateShadow() {
+    vec3 shadowCoord = f_shadowCoord.xyz / f_shadowCoord.w * 0.5 + 0.5;
+
+    if(any(lessThan(shadowCoord, vec3(0))) || any(greaterThan(shadowCoord, vec3(1)))) {
+        return 1.0;
+    }
+
+    float depth_depthMap = unpackRGBAToDepth(texture(u_shadowMap, shadowCoord.xy));
+
+    float bias = 0.002;
+
+    float shadowFactor = shadowCoord.z - bias > depth_depthMap ? 0.0 : 1.0;
+
+    return shadowFactor;
 }
 `;
