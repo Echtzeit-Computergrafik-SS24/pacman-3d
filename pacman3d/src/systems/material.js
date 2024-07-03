@@ -82,7 +82,13 @@ export function createMaterials() {
         u_time: { value: 0 },
         u_timeScale: { value: 3.0 },
         u_displacementStrength: { value: 0.3 },
-        u_lightDirection: { value: SUN_DIRECTION.clone().normalize() },
+        u_shadowMap: { value: global.light.shadow.map.texture },
+        u_shadowCameraP: {
+          value: global.light.shadow.camera.projectionMatrix,
+        },
+        u_shadowCameraV: {
+          value: global.light.shadow.camera.matrixWorldInverse,
+        },
       },
       vertexShader: grassVertexShaderSrc,
       fragmentShader: grassFragmentShaderSrc,

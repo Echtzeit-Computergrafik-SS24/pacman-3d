@@ -6,9 +6,12 @@ precision highp float;
 uniform float u_time;
 uniform float u_timeScale;
 uniform float u_displacementStrength;
+uniform mat4 u_shadowCameraP;
+uniform mat4 u_shadowCameraV;
 
 out vec2 f_uv;
 out vec3 f_normal;
+out vec4 f_shadowCoord;
 
 void main() {
     f_uv = uv;
@@ -30,5 +33,6 @@ void main() {
     
     vec4 modelViewPosition = modelViewMatrix * pos;
     gl_Position = projectionMatrix * modelViewPosition;
+    f_shadowCoord = u_shadowCameraP * u_shadowCameraV * modelMatrix * pos;
 }
 `;
