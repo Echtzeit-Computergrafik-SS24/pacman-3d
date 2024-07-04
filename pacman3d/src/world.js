@@ -73,7 +73,7 @@ export class World {
     scene.add(cameraHelper); */
 
     // comment out following line to enable follow cam
-    global.controls = new OrbitControls(camera, canvas);
+    // global.controls = new OrbitControls(camera, canvas);
   }
 
   render() {

@@ -56,7 +56,7 @@ export function createMaterials() {
         u_lightPosition: { value: SUN_POSITION.clone() },
         u_textureScale: { value: new THREE.Vector2(0.4, 0.4) },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
-        u_specularIntensity: { value: 0.2 },
+        u_specularIntensity: { value: 0.1 },
         u_reflectionIntensity: { value: 0.05 },
         u_ambientIntensity: { value: 0.07 },
         u_skybox: { value: null },
