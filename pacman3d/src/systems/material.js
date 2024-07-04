@@ -16,6 +16,7 @@ export function createMaterials() {
     default: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -53,6 +54,7 @@ export function createMaterials() {
     grass: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(0.4, 0.4) },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.2 },
         u_reflectionIntensity: { value: 0.05 },
@@ -99,6 +101,7 @@ export function createMaterials() {
     player: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 0.65, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -126,6 +129,7 @@ export function createMaterials() {
     collectable: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 0.8, 0) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.05 },
@@ -153,6 +157,7 @@ export function createMaterials() {
     enemy: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 0, 0) },
         u_specularIntensity: { value: 0.5 },
         u_reflectionIntensity: { value: 0.05 },
@@ -180,6 +185,7 @@ export function createMaterials() {
     wall: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.0 },
@@ -207,6 +213,7 @@ export function createMaterials() {
     ground_parallax: new THREE.ShaderMaterial({
       uniforms: {
         u_lightPosition: { value: SUN_POSITION.clone() },
+        u_textureScale: { value: new THREE.Vector2(1.0, 1.0) },
         u_diffuseColor: { value: new THREE.Vector3(1, 1, 1) },
         u_specularIntensity: { value: 0.3 },
         u_reflectionIntensity: { value: 0.0 },
@@ -327,7 +334,6 @@ export function createMaterials() {
   );
 
   // grass texture
-  // load ground parallax textures
   loader.setPath("assets/textures/meadow/");
   // diffuse
   loader.load(
