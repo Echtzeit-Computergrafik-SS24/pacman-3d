@@ -67,90 +67,6 @@ export function createMapObject(mapdata) {
       }
     }
   }
-/* 
-  // add surrounding map area
-  const envAreaWidth = 40.0;
-  const envAreaData = {
-    north: {
-      plane_w: width,
-      plane_h: envAreaWidth,
-      pos_x: width / 2 - 0.5,
-      pos_y: -envAreaWidth / 2 - 0.5,
-    },
-    north_east: {
-      plane_w: envAreaWidth,
-      plane_h: envAreaWidth,
-      pos_x: width + envAreaWidth / 2 - 0.5,
-      pos_y: -envAreaWidth / 2 - 0.5,
-    },
-    east: {
-      plane_w: envAreaWidth,
-      plane_h: height,
-      pos_x: width + envAreaWidth / 2 - 0.5,
-      pos_y: height / 2 - 0.5,
-    },
-    south_east: {
-      plane_w: envAreaWidth,
-      plane_h: envAreaWidth,
-      pos_x: width + envAreaWidth / 2 - 0.5,
-      pos_y: height + envAreaWidth / 2 - 0.5,
-    },
-    south: {
-      plane_w: width,
-      plane_h: envAreaWidth,
-      pos_x: width / 2 - 0.5,
-      pos_y: height + envAreaWidth / 2 - 0.5,
-    },
-    south_west: {
-      plane_w: envAreaWidth,
-      plane_h: envAreaWidth,
-      pos_x: -envAreaWidth / 2 - 0.5,
-      pos_y: height + envAreaWidth / 2 - 0.5,
-    },
-    west: {
-      plane_w: envAreaWidth,
-      plane_h: height,
-      pos_x: -envAreaWidth / 2 - 0.5,
-      pos_y: height / 2 - 0.5,
-    },
-    north_west: {
-      plane_w: envAreaWidth,
-      plane_h: envAreaWidth,
-      pos_x: -envAreaWidth / 2 - 0.5,
-      pos_y: -envAreaWidth / 2 - 0.5,
-    },
-  };
-
-  const envAreaGrassDensity = 50.0;
-  const envAreaGrassHeight = 0.5;
-
-  for (const direction in envAreaData) {
-    const planeGroup = new THREE.Group();
-    const planeGeo = new THREE.PlaneGeometry(
-      envAreaData[direction].plane_w,
-      envAreaData[direction].plane_h
-    );
-    const planeMesh = new THREE.Mesh(planeGeo, global.materials.grass);
-    planeMesh.rotation.x = THREE.MathUtils.degToRad(-90);
-    planeGroup.position.set(
-      envAreaData[direction].pos_x,
-      0,
-      envAreaData[direction].pos_y
-    );
-    planeGroup.add(planeMesh);
-
-    const grass = createGrass(
-      envAreaData[direction].plane_w,
-      envAreaData[direction].plane_h,
-      envAreaGrassHeight,
-      envAreaData[direction].plane_w *
-        envAreaData[direction].plane_h *
-        envAreaGrassDensity
-    );
-    planeGroup.add(grass);
-
-    group.add(planeGroup);
-  } */
 
   group.position.set(-(width * 0.5) + 0.5, 0, -(height * 0.5) + 0.5);
 
@@ -158,7 +74,7 @@ export function createMapObject(mapdata) {
 }
 
 function createGrass(width, height, leafHeight, instances) {
-  const geometry = new THREE.PlaneGeometry(0.01, leafHeight, 1, 4);
+  const geometry = new THREE.PlaneGeometry(0.04, leafHeight, 1, 4);
   geometry.translate(0, 0.5 * leafHeight, 0);
 
   const dummy = new THREE.Object3D();

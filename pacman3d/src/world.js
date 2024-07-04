@@ -39,7 +39,7 @@ export class World {
 
     // add map object
     const mapObject = createMapObject(global.map.data);
-    scene.add(mapObject); 
+    scene.add(mapObject);
 
     // add skybox
     const skybox = createSkybox();
@@ -68,6 +68,9 @@ export class World {
       0xff0000
     );
     scene.add(arrow); */
+
+    /* const cameraHelper = new THREE.CameraHelper(global.light.shadow.camera);
+    scene.add(cameraHelper); */
 
     // comment out following line to enable follow cam
     global.controls = new OrbitControls(camera, canvas);

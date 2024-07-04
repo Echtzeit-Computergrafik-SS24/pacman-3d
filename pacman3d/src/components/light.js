@@ -9,14 +9,14 @@ export function createLight() {
   const light = new THREE.DirectionalLight();
   light.position.copy(SUN_POSITION);
 
-  const frustumSize = 40;
+  const frustumSize = 20;
   light.shadow.camera = new THREE.OrthographicCamera(
     -frustumSize / 2,
     frustumSize / 2,
     frustumSize / 2,
     -frustumSize / 2,
     1,
-    80
+    30
   );
 
   light.shadow.camera.position.copy(light.position);

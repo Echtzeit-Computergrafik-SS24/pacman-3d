@@ -152,8 +152,10 @@ export class Enemy extends GameObject {
   constructor(position) {
     super(position);
 
-    const geometry = new THREE.SphereGeometry(0.45, 16, 16);
-    this.mesh = new THREE.Mesh(geometry, global.materials.enemy);
+    this.mesh = new THREE.Mesh();
+    loadGeometryFromOBJ("assets/models/ghost.obj", this.mesh);
+    this.mesh.material = global.materials.enemy;
+    this.mesh.name = "enemy";
     this.mesh.position.set(this.position[0], 0.5, this.position[1]);
 
     this.timeBetweenMoves = 1.0;

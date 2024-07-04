@@ -2,6 +2,7 @@ export const vertexShaderSrc = `
 precision highp float;
 
 uniform vec3 u_lightPosition;
+uniform vec2 u_textureScale;
 uniform mat4 u_shadowCameraP;
 uniform mat4 u_shadowCameraV;
 
@@ -15,7 +16,7 @@ out vec4 f_shadowCoord;
 
 
 void main() {
-    f_texCoord = uv;
+    f_texCoord = uv * u_textureScale;
     vec3 _normal = (modelMatrix * vec4(normal, 0.0)).xyz;
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
 
