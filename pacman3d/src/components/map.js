@@ -74,7 +74,7 @@ export function createMapObject(mapdata) {
 }
 
 function createGrass(width, height, leafHeight, instances) {
-  const geometry = new THREE.PlaneGeometry(0.05, leafHeight, 1, 4);
+  const geometry = new THREE.PlaneGeometry(0.04, leafHeight, 1, 4);
   geometry.translate(0, 0.5 * leafHeight, 0);
 
   const dummy = new THREE.Object3D();
