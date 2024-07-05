@@ -251,7 +251,7 @@ export function createMaterials() {
 
   // load wall textures
   const loader = new THREE.TextureLoader();
-  loader.setPath("assets/textures/rockwall/");
+  loader.setPath("pacman3d/assets/textures/rockwall/");
   // diffuse
   loader.load(
     "rockwall-diffuse.avif",
@@ -287,7 +287,7 @@ export function createMaterials() {
   );
 
   // load ground parallax textures
-  loader.setPath("assets/textures/pebbles/");
+  loader.setPath("pacman3d/assets/textures/pebbles/");
   // diffuse
   loader.load(
     "pebbles-diffuse.webp",
@@ -334,7 +334,7 @@ export function createMaterials() {
   );
 
   // grass texture
-  loader.setPath("assets/textures/meadow/");
+  loader.setPath("pacman3d/assets/textures/meadow/");
   // diffuse
   loader.load(
     "meadow-diffuse.png",

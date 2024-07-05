@@ -89,8 +89,8 @@
     <script type="importmap">
       {
         "imports": {
-          "three": "./libs/three.module.js",
-          "three/addons/": "./libs/addons/"
+          "three": "./pacman3d/libs/three.module.js",
+          "three/addons/": "./pacman3d/libs/addons/"
         }
       }
     </script>
@@ -116,7 +116,7 @@
   </script>
   <script type="module">
     ("use strict");
-    import { World } from "./src/world.js";
+    import { World } from "./pacman3d/src/world.js";
 
     const canvas = document.getElementById("canvas");
     let world = new World(canvas);
