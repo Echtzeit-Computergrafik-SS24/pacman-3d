@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 export function createSkybox() {
   const loader = new THREE.CubeTextureLoader();
-  loader.setPath("assets/textures/skybox/");
+  loader.setPath("pacman3d/assets/textures/skybox/");
   /* loader.setPath("assets/textures/skybox_label/"); */
   loader.load(
     [

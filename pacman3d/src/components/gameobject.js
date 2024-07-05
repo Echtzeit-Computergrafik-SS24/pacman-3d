@@ -39,7 +39,7 @@ export class Player extends GameObject {
     super(position);
 
     this.mesh = new THREE.Mesh();
-    loadGeometryFromOBJ("assets/models/player.obj", this.mesh);
+    loadGeometryFromOBJ("pacman3d/assets/models/player.obj", this.mesh);
     this.mesh.material = global.materials.player;
     this.mesh.name = "player";
     this.mesh.position.set(this.position[0], 0.5, this.position[1]);
@@ -153,7 +153,7 @@ export class Enemy extends GameObject {
     super(position);
 
     this.mesh = new THREE.Mesh();
-    loadGeometryFromOBJ("assets/models/ghost.obj", this.mesh);
+    loadGeometryFromOBJ("pacman3d/assets/models/ghost.obj", this.mesh);
     this.mesh.material = global.materials.enemy;
     this.mesh.name = "enemy";
     this.mesh.position.set(this.position[0], 0.5, this.position[1]);
@@ -350,7 +350,7 @@ export class Collectable extends GameObject {
     this.bounceSpeed = 2.0;
 
     this.mesh = new THREE.Mesh();
-    loadGeometryFromOBJ("assets/models/coin.obj", this.mesh);
+    loadGeometryFromOBJ("pacman3d/assets/models/coin.obj", this.mesh);
     this.mesh.material = global.materials.collectable;
     this.mesh.position.set(this.position[0], this.yPosition, this.position[1]);
   }
